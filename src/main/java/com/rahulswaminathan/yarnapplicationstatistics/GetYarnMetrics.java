@@ -423,8 +423,8 @@ class StatsThread implements Runnable {
        // SparkContext sc = new SparkContext(conf);
 
         for (String queue : queues) {
-            new ProcessBuilder("/bin/bash", "/Users/rahulswaminathan/" +
-                    "IdeaProjects/yarn-application-statistics/run_spark_pi.sh", dmem, emem, queue).start();
+            new ProcessBuilder("/bin/bash", "/Users/shlee0605/" +
+                    "bigdata/yarnapplicationstatistics/run_spark_pi.sh", dmem, emem, queue).start();
         }
     }
 }
