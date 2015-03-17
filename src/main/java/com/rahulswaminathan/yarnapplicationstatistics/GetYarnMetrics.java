@@ -425,8 +425,8 @@ class StatsThread implements Runnable {
        // SparkContext sc = new SparkContext(conf);
 
         for (String queue : queues) {
-             new ProcessBuilder("/bin/bash", "/home/hadoop/" +
-                     "yarnapplicationstatistics/run_spark_pi.sh", dmem, emem, queue).start();
+            // new ProcessBuilder("/bin/bash", "/home/hadoop/" +
+            //       "yarnapplicationstatistics/run_spark_pi.sh", dmem, emem, queue).start();
 
             new ProcessBuilder("/bin/bash", "/home/hadoop/" +
                     "project1/script/interactive/interactive_test.sh", dmem, emem, queue).start();
