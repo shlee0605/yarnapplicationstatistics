@@ -84,7 +84,7 @@ public class GetYarnMetrics {
         final BufferedWriter overallWriter = new BufferedWriter(new FileWriter(filename + ".txt", true));
         BufferedWriter schedulerWriter = new BufferedWriter(new FileWriter(filename + "_scheduler.txt", true));
         BufferedWriter metricsWriter = new BufferedWriter(new FileWriter(filename + "_metrics.txt", true));
-        GetYarnMetrics http = new GetYarnMetrics();
+        GetYarnMetrics http = new GetYarnMetrics();	
 
         overallWriter.write("executer memory: " + emem);
         overallWriter.newLine();
@@ -209,7 +209,9 @@ public class GetYarnMetrics {
             makeNewLines(overallWriter, schedulerWriter, metricsWriter);
             String clusterMetricsResponse  = http.sendClusterMetricsGet();
             String clusterSchedulerResponse = http.sendClusterSchedulerGet();
-
+		
+	    System.out.println(clusterMetricsResponse);	
+		
             Scheduler.queue[] schedulerQueues = readClusterSchedulerJsonResponse(clusterSchedulerResponse);
             long currentTimeElapsed = System.currentTimeMillis() - startTime;
             writeMessage("current time elapsed in ms=" + currentTimeElapsed, overallWriter, schedulerWriter, metricsWriter);
@@ -423,13 +425,13 @@ class StatsThread implements Runnable {
        // SparkContext sc = new SparkContext(conf);
 
         for (String queue : queues) {
-            // new ProcessBuilder("/bin/bash", "/Users/shlee0605/" +
-            //         "bigdata/yarnapplicationstatistics/run_spark_pi.sh", dmem, emem, queue).start();
+             new ProcessBuilder("/bin/bash", "/home/hadoop/" +
+                     "yarnapplicationstatistics/run_spark_pi.sh", dmem, emem, queue).start();
 
-            new ProcessBuilder("/bin/bash", "/Users/shlee0605/" +
-                    "bigdata/project1/script/interactive/interactive_test.sh", dmem, emem, queue).start();
-            new ProcessBuilder("/bin/bash", "/Users/shlee0605/" +
-                    "bigdata/project1/script/fb/run-job-test.sh", queue).start();
+            new ProcessBuilder("/bin/bash", "/home/hadoop/" +
+                    "project1/script/interactive/interactive_test.sh", dmem, emem, queue).start();
+            new ProcessBuilder("/bin/bash", "/home/hadoop/" +
+                    "project1/script/fb/run-job-test.sh", queue).start();
 
         }
     }
