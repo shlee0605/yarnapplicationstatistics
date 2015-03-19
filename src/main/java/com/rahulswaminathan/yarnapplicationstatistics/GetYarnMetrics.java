@@ -234,6 +234,13 @@ public class GetYarnMetrics {
                 break;
             }
         }
+        for(int i = 0; i < 5; i++) {
+            Thread.sleep(2000);
+            String clusterMetricsResponse  = http.sendClusterMetricsGet();
+            long currentTimeElapsed = System.currentTimeMillis() - startTime;
+            dbWriter.writeClusterMetrics(clusterMetricsResponse, currentTimeElapsed);
+        }
+
     }
 
     // HTTP GET request
