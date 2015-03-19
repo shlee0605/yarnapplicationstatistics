@@ -21,7 +21,6 @@ import org.codehaus.jackson.type.TypeReference;
 @JsonIgnoreProperties(ignoreUnknown = true)
 
 public class GetYarnMetrics {
-
     private final String USER_AGENT = "Mozilla/5.0";
     private String queuesAsString = "";
     private long startTime = 0;
@@ -37,7 +36,6 @@ public class GetYarnMetrics {
 
     public static void main(String[] args) throws Exception {
         GetYarnMetrics m = new GetYarnMetrics();
-
         m.start();
     }
 
@@ -72,7 +70,6 @@ public class GetYarnMetrics {
     }
 
     private void doStats(String dmem, String emem, String ... queues) throws Exception{
-        startTime = System.currentTimeMillis();
 
         queuesAsString = "";
         String filename = "data_" + dmem + "_" + emem;
@@ -84,7 +81,9 @@ public class GetYarnMetrics {
         final BufferedWriter overallWriter = new BufferedWriter(new FileWriter(filename + ".txt", true));
         BufferedWriter schedulerWriter = new BufferedWriter(new FileWriter(filename + "_scheduler.txt", true));
         BufferedWriter metricsWriter = new BufferedWriter(new FileWriter(filename + "_metrics.txt", true));
-        GetYarnMetrics http = new GetYarnMetrics();	
+        GetYarnMetrics http = new GetYarnMetrics();
+        DatabaseWrapper dbWriter = new DatabaseWrapper();
+        System.out.println("Experiment ID: " + dbWriter.getExperimentId());
 
         overallWriter.write("executer memory: " + emem);
         overallWriter.newLine();
@@ -95,6 +94,7 @@ public class GetYarnMetrics {
         overallWriter.write("queues: " + queuesAsString);
         overallWriter.newLine();
 
+        startTime = System.currentTimeMillis();
         Date dateStartTime = new Date(startTime);
 
         writeMessage("Date started: " + dateStartTime, overallWriter, schedulerWriter, metricsWriter);
@@ -225,6 +225,7 @@ public class GetYarnMetrics {
 
             writeQueueInfoToFile(schedulerWriter, schedulerQueues);
             writeClusterMetrics(metricsWriter, clusterMetricsResponse);
+            dbWriter.writeClusterMetrics(clusterMetricsResponse, currentTimeElapsed);
 
             if (!hasStarted && numApps > 0)
                 hasStarted = true;
