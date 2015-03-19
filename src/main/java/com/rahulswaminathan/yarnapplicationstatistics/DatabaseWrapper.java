@@ -9,8 +9,8 @@ import java.sql.*;
  */
 public class DatabaseWrapper {
 
-    static final int PORT = 12000;
-    static final String HOST = "yarn-metrics.cpy7lixxyfzm.us-west-2.rds.amazonaws.com";
+    static final int PORT = 3306;
+    static final String HOST = "yarn.cueaar94ytrf.us-east-1.rds.amazonaws.com";
     static final String DB_NAME = "yarn";
     static final String USER = "yarn";
     static final String PASS = "yarn1234";
