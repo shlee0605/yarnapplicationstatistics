@@ -162,17 +162,16 @@ class CapacitySchedulerMetricsThread implements Runnable {
     public void run() {
         Connection connection = DatabaseWrapper.getConnection();
         ObjectMapper mapper = new ObjectMapper();
-        //TODO Scheduler
-        Scheduler metrics = null;
+       
 
         mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
+        Scheduler.queue[] schedulerQueues = null;
         try {
             //metrics = mapper.readValue(clusterMetricsResponse, ClusterMetrics.class);
             JsonNode node = mapper.readTree(schedulerMetricsResponse);
             node = node.get("scheduler").get("schedulerInfo").get("queues").get("queue");
             TypeReference<Scheduler.queue[]> typeRef = new TypeReference<Scheduler.queue[]>() {};
-            Scheduler.queue[] schedulerQueues =  mapper.readValue(node.traverse(), typeRef);
+            schedulerQueues =  mapper.readValue(node.traverse(), typeRef);
 
 
         } catch (Exception e) {
@@ -182,7 +181,7 @@ class CapacitySchedulerMetricsThread implements Runnable {
 
 
         for (int i = 0; i < schedulerQueues.length; i++) {
-            Scehduler.queue q = schedulerQueues[i];
+            Scheduler.queue q = schedulerQueues[i];
             String insertTableSQL = "INSERT INTO capacity_scheduler_metrics"
                 + "(experiment_id, time_elapsed , queue_id, capacity) VALUES"
                 + "(?,?,?,?)";

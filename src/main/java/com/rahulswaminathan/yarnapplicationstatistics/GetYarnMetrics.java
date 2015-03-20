@@ -225,6 +225,7 @@ public class GetYarnMetrics {
             writeQueueInfoToFile(schedulerWriter, schedulerQueues);
             writeClusterMetrics(metricsWriter, clusterMetricsResponse);
             dbWriter.writeClusterMetrics(clusterMetricsResponse, currentTimeElapsed);
+            
             dbWriter.writeCapacitySchedulerMetrics(clusterSchedulerResponse, currentTimeElapsed);
 
             if (!hasStarted && numApps > 0)
