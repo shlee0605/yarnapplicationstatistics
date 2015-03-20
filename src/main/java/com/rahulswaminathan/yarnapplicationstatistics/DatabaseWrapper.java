@@ -183,11 +183,11 @@ class CapacitySchedulerMetricsThread implements Runnable {
         for (int i = 0; i < schedulerQueues.length; i++) {
             Scheduler.queue q = schedulerQueues[i];
             String insertTableSQL = "INSERT INTO capacity_scheduler_metrics"
-                + "(experiment_id, time_elapsed, capacity, used_capacity, max_capacity, absolute_capacity,
-                    absolute_max_capacity, absolute_used_capacity, num_applications, queue_name, state,
-                    resource_used_memory, resource_used_vcores, num_active_applications, num_pending_applications,
-                    num_containers, max_applications, max_applications_per_user, max_active_applications,
-                    max_active_applications_per_user) VALUES"
+                + "(experiment_id, time_elapsed, capacity, used_capacity, max_capacity, absolute_capacity,"
+                +  "absolute_max_capacity, absolute_used_capacity, num_applications, queue_name, state,"
+                +  "resource_used_memory, resource_used_vcores, num_active_applications, num_pending_applications,"
+                +  "num_containers, max_applications, max_applications_per_user, max_active_applications,"
+                +  "max_active_applications_per_user) VALUES"
                 + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement pstmt = null;
 
