@@ -204,8 +204,8 @@ class CapacitySchedulerMetricsThread implements Runnable {
                 pstmt.setInt(9, q.getNumApplications());
                 pstmt.setString(10, q.getQueueName());
                 pstmt.setString(11, q.getState());
-                pstmt.setInt(12, q.getResourceUsed().getMemory());
-                pstmt.setInt(13, q.getResourceUsed().getvCores());
+                pstmt.setInt(12, q.getResourcesUsed().getMemory());
+                pstmt.setInt(13, q.getResourcesUsed().getvCores());
                 pstmt.setInt(14, q.getNumActiveApplications());
                 pstmt.setInt(15, q.getNumPendingApplications());
                 pstmt.setInt(16, q.getNumContainers());
