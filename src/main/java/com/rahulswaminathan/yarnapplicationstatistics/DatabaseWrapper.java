@@ -50,6 +50,7 @@ public class DatabaseWrapper {
     }
     public void writeCapacitySchedulerMetrics(String response, long currentTimeElapsed) throws Exception {
         CapacitySchedulerMetricsThread writerThread = new CapacitySchedulerMetricsThread(response, currentTimeElapsed, experimentId);
+        System.out.println("=========================================");
         writerThread.run();
     }
 
