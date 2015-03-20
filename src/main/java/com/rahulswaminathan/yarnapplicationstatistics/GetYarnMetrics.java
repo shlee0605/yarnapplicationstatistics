@@ -209,9 +209,9 @@ public class GetYarnMetrics {
             makeNewLines(overallWriter, schedulerWriter, metricsWriter);
             String clusterMetricsResponse  = http.sendClusterMetricsGet();
             String clusterSchedulerResponse = http.sendClusterSchedulerGet();
-		
-	    System.out.println(clusterMetricsResponse);	
-		
+
+	        System.out.println(clusterMetricsResponse);
+
             Scheduler.queue[] schedulerQueues = readClusterSchedulerJsonResponse(clusterSchedulerResponse);
             long currentTimeElapsed = System.currentTimeMillis() - startTime;
             writeMessage("current time elapsed in ms=" + currentTimeElapsed, overallWriter, schedulerWriter, metricsWriter);
@@ -226,6 +226,7 @@ public class GetYarnMetrics {
             writeQueueInfoToFile(schedulerWriter, schedulerQueues);
             writeClusterMetrics(metricsWriter, clusterMetricsResponse);
             dbWriter.writeClusterMetrics(clusterMetricsResponse, currentTimeElapsed);
+            dbWriter.writeCapacitySchedulerMetrics(clusterSchedulerResponse, currentTimeElapsed);
 
             if (!hasStarted && numApps > 0)
                 hasStarted = true;
@@ -236,6 +237,13 @@ public class GetYarnMetrics {
                 break;
             }
         }
+        for(int i = 0; i < 5; i++) {
+            Thread.sleep(2000);
+            String clusterMetricsResponse  = http.sendClusterMetricsGet();
+            long currentTimeElapsed = System.currentTimeMillis() - startTime;
+            dbWriter.writeClusterMetrics(clusterMetricsResponse, currentTimeElapsed);
+        }
+
     }
 
     // HTTP GET request

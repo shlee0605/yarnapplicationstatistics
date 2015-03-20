@@ -1,6 +1,11 @@
 package com.rahulswaminathan.yarnapplicationstatistics;
 
+
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 
 import java.sql.*;
 
@@ -9,8 +14,8 @@ import java.sql.*;
  */
 public class DatabaseWrapper {
 
-    static final int PORT = 12000;
-    static final String HOST = "yarn-metrics.cpy7lixxyfzm.us-west-2.rds.amazonaws.com";
+    static final int PORT = 3306;
+    static final String HOST = "yarn.cueaar94ytrf.us-east-1.rds.amazonaws.com";
     static final String DB_NAME = "yarn";
     static final String USER = "yarn";
     static final String PASS = "yarn1234";
@@ -41,6 +46,10 @@ public class DatabaseWrapper {
 
     public void writeClusterMetrics(String response, long currentTimeElapsed) throws Exception {
         ClusterMetricsThread writerThread = new ClusterMetricsThread(response, currentTimeElapsed, experimentId);
+        writerThread.run();
+    }
+    public void writeCapacitySchedulerMetrics(String response, long currentTimeElapsed) throws Exception {
+        CapacitySchedulerMetricsThread writerThread = new CapacitySchedulerMetricsThread(response, currentTimeElapsed, experimentId);
         writerThread.run();
     }
 
@@ -135,3 +144,65 @@ class ClusterMetricsThread implements Runnable {
     }
 
 }
+
+
+
+class CapacitySchedulerMetricsThread implements Runnable {
+    private String schedulerMetricsResponse;
+    private long timeElapsed;
+    private int experimentId;
+
+    public CapacitySchedulerMetricsThread(String response, long time, int id) {
+        schedulerMetricsResponse = response;
+        timeElapsed = time;
+        experimentId = id;
+    }
+
+    public void run() {
+        Connection connection = DatabaseWrapper.getConnection();
+        ObjectMapper mapper = new ObjectMapper();
+        //TODO Scheduler
+        Scheduler metrics = null;
+
+        mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        try {
+            //metrics = mapper.readValue(clusterMetricsResponse, ClusterMetrics.class);
+            JsonNode node = mapper.readTree(schedulerMetricsResponse);
+            node = node.get("scheduler").get("schedulerInfo").get("queues").get("queue");
+            TypeReference<Scheduler.queue[]> typeRef = new TypeReference<Scheduler.queue[]>() {};
+            Scheduler.queue[] schedulerQueues =  mapper.readValue(node.traverse(), typeRef);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+        for (int i = 0; i < schedulerQueues.length; i++) {
+            Scehduler.queue q = schedulerQueues[i];
+            String insertTableSQL = "INSERT INTO capacity_scheduler_metrics"
+                + "(experiment_id, time_elapsed , queue_id, capacity) VALUES"
+                + "(?,?,?,?)";
+            PreparedStatement pstmt = null;
+
+            try {
+                pstmt = connection.prepareStatement(insertTableSQL);
+                pstmt.setInt(1, experimentId);
+                pstmt.setLong(2, timeElapsed);
+                pstmt.setInt(3, i);
+                pstmt.setFloat(4, q.getCapacity());
+             
+                pstmt.execute();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+       
+    }
+
+}
+
