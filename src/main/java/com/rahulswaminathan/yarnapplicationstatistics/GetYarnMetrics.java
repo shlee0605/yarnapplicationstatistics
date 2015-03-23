@@ -226,7 +226,7 @@ public class GetYarnMetrics {
             writeQueueInfoToFile(schedulerWriter, schedulerQueues);
             writeClusterMetrics(metricsWriter, clusterMetricsResponse);
             dbWriter.writeClusterMetrics(clusterMetricsResponse, currentTimeElapsed);
-            
+
             dbWriter.writeCapacitySchedulerMetrics(clusterSchedulerResponse, currentTimeElapsed);
 
             if (!hasStarted && numApps > 0)
@@ -434,14 +434,14 @@ class StatsThread implements Runnable {
 
        // SparkContext sc = new SparkContext(conf);
 
-        for (String queue : queues) {
+        for (int i = 0; i < 2; i++) {
             // new ProcessBuilder("/bin/bash", "/home/hadoop/" +
             //       "yarnapplicationstatistics/run_spark_pi.sh", dmem, emem, queue).start();
 
             new ProcessBuilder("/bin/bash", "/home/hadoop/" +
-                    "project1/script/interactive/interactive_test.sh", dmem, emem, queue).start();
+                    "project1/script/interactive/interactive_test.sh", dmem, emem, "b").start();
             new ProcessBuilder("/bin/bash", "/home/hadoop/" +
-                    "project1/script/fb/run-job-test.sh", queue).start();
+                    "project1/script/fb/run-job-test.sh", "a").start();
 
         }
     }
