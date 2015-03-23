@@ -50,6 +50,7 @@ public class DatabaseWrapper {
     }
     public void writeCapacitySchedulerMetrics(String response, long currentTimeElapsed) throws Exception {
         CapacitySchedulerMetricsThread writerThread = new CapacitySchedulerMetricsThread(response, currentTimeElapsed, experimentId);
+        System.out.println("=========================================");
         writerThread.run();
     }
 
@@ -161,8 +162,7 @@ class CapacitySchedulerMetricsThread implements Runnable {
     public void run() {
         Connection connection = DatabaseWrapper.getConnection();
         ObjectMapper mapper = new ObjectMapper();
-        //TODO Scheduler
-        Scheduler metrics = null;
+
 
         mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         Scheduler.queue[] schedulerQueues = null;
@@ -183,16 +183,36 @@ class CapacitySchedulerMetricsThread implements Runnable {
         for (int i = 0; i < schedulerQueues.length; i++) {
             Scheduler.queue q = schedulerQueues[i];
             String insertTableSQL = "INSERT INTO capacity_scheduler_metrics"
-                + "(experiment_id, time_elapsed , queue_id, capacity) VALUES"
-                + "(?,?,?,?)";
+                + "(experiment_id, time_elapsed, capacity, used_capacity, max_capacity, absolute_capacity,"
+                +  "absolute_max_capacity, absolute_used_capacity, num_applications, queue_name, state,"
+                +  "resource_used_memory, resource_used_vcores, num_active_applications, num_pending_applications,"
+                +  "num_containers, max_applications, max_applications_per_user, max_active_applications,"
+                +  "max_active_applications_per_user) VALUES"
+                + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             PreparedStatement pstmt = null;
 
             try {
                 pstmt = connection.prepareStatement(insertTableSQL);
                 pstmt.setInt(1, experimentId);
                 pstmt.setLong(2, timeElapsed);
-                pstmt.setInt(3, i);
-                pstmt.setFloat(4, q.getCapacity());
+                pstmt.setFloat(3, q.getCapacity());
+                pstmt.setFloat(4, q.getUsedCapacity());
+                pstmt.setFloat(5, q.getMaxCapacity());
+                pstmt.setFloat(6, q.getAbsoluteCapacity());
+                pstmt.setFloat(7, q.getAbsoluteMaxCapacity());
+                pstmt.setFloat(8, q.getAbsoluteUsedCapacity());
+                pstmt.setInt(9, q.getNumApplications());
+                pstmt.setString(10, q.getQueueName());
+                pstmt.setString(11, q.getState());
+                pstmt.setInt(12, q.getResourcesUsed().getMemory());
+                pstmt.setInt(13, q.getResourcesUsed().getvCores());
+                pstmt.setInt(14, q.getNumActiveApplications());
+                pstmt.setInt(15, q.getNumPendingApplications());
+                pstmt.setInt(16, q.getNumContainers());
+                pstmt.setInt(17, q.getMaxApplications());
+                pstmt.setInt(18, q.getMaxApplicationsPerUser());
+                pstmt.setInt(19, q.getMaxActiveApplications());
+                pstmt.setInt(20, q.getMaxActiveApplicationsPerUser());
 
                 pstmt.execute();
             } catch (SQLException e) {
