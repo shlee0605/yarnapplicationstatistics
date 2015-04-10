@@ -210,7 +210,6 @@ public class GetYarnMetrics {
             String clusterMetricsResponse  = http.sendClusterMetricsGet();
             String clusterSchedulerResponse = http.sendClusterSchedulerGet();
             //System.out.println(clusterSchedulerResponse);
-
             Scheduler.queue[] schedulerQueues = readClusterSchedulerJsonResponse(clusterSchedulerResponse);
             long currentTimeElapsed = System.currentTimeMillis() - startTime;
             writeMessage("current time elapsed in ms=" + currentTimeElapsed, overallWriter, schedulerWriter, metricsWriter);

@@ -1,8 +1,12 @@
 package com.rahulswaminathan.yarnapplicationstatistics;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+
 /**
  * Created by rahulswaminathan on 10/21/14.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class ClusterMetrics {
 
     private clusterMetrics clusterMetrics = null;

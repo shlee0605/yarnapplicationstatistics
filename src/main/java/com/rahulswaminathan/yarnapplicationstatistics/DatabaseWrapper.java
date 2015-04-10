@@ -162,7 +162,7 @@ class CapacitySchedulerMetricsThread implements Runnable {
     public void run() {
         Connection connection = DatabaseWrapper.getConnection();
         ObjectMapper mapper = new ObjectMapper();
-       
+
 
         mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         Scheduler.queue[] schedulerQueues = null;
@@ -214,7 +214,6 @@ class CapacitySchedulerMetricsThread implements Runnable {
                 pstmt.setInt(19, q.getMaxActiveApplications());
                 pstmt.setInt(20, q.getMaxActiveApplicationsPerUser());
 
-             
                 pstmt.execute();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -222,7 +221,7 @@ class CapacitySchedulerMetricsThread implements Runnable {
 
 
         }
-       
+
     }
 
 }
