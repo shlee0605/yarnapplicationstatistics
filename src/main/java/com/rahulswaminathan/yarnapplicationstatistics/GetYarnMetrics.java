@@ -209,7 +209,7 @@ public class GetYarnMetrics {
             makeNewLines(overallWriter, schedulerWriter, metricsWriter);
             String clusterMetricsResponse  = http.sendClusterMetricsGet();
             String clusterSchedulerResponse = http.sendClusterSchedulerGet();
-            System.out.println(clusterSchedulerResponse);
+            //System.out.println(clusterSchedulerResponse);
 
             Scheduler.queue[] schedulerQueues = readClusterSchedulerJsonResponse(clusterSchedulerResponse);
             long currentTimeElapsed = System.currentTimeMillis() - startTime;
@@ -225,7 +225,7 @@ public class GetYarnMetrics {
             writeQueueInfoToFile(schedulerWriter, schedulerQueues);
             writeClusterMetrics(metricsWriter, clusterMetricsResponse);
             dbWriter.writeClusterMetrics(clusterMetricsResponse, currentTimeElapsed);
-            
+
             dbWriter.writeCapacitySchedulerMetrics(clusterSchedulerResponse, currentTimeElapsed);
 
             if (!hasStarted && numApps > 0)
@@ -433,15 +433,17 @@ class StatsThread implements Runnable {
 
        // SparkContext sc = new SparkContext(conf);
 
-        for (String queue : queues) {
-            // new ProcessBuilder("/bin/bash", "/Users/shlee0605/" +
-            //         "bigdata/yarnapplicationstatistics/run_spark_pi.sh", dmem, emem, queue).start();
+        // for (String queue : queues) {
 
-            new ProcessBuilder("/bin/bash", "/Users/shlee0605/" +
-                    "bigdata/project1/script/interactive/interactive_test.sh", dmem, emem, queue).start();
-            new ProcessBuilder("/bin/bash", "/Users/shlee0605/" +
-                    "bigdata/project1/script/fb/run-job-test.sh", queue).start();
+        //     new ProcessBuilder("/bin/bash", "/Users/shlee0605/" +
+        //             "bigdata/project1/script/interactive/interactive_test.sh", dmem, emem, queue).start();
+        //     new ProcessBuilder("/bin/bash", "/Users/shlee0605/" +
+        //             "bigdata/project1/script/fb/run-job-test.sh", queue).start();
 
-        }
+        // }
+        Thread batch = new Thread(new BatchTenant(dmem, emem, "a"));
+        Thread analytics = new Thread(new AnalyticsTenant(dmem, emem, "b"));
+        batch.start();
+        analytics.start();
     }
 }
