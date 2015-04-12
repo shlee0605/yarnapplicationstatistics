@@ -31,18 +31,16 @@ public class AnalyticsTenant implements Runnable {
   public void senarioOne() {
     System.out.println("Senario One is starting...");
     try {
-      new ProcessBuilder("hive", " -i " +
-          "/home/hadoop/yarnapplicationstatistics/script/interactive/aggregation.sql").start();
+      new ProcessBuilder("/bin/bash", "/home/hadoop/" +
+          "yarnapplicationstatistics/script/interactive/interactive_test1.sh").start();
 
       Thread.sleep(4000);
 
-      new ProcessBuilder("hive", " -i " +
-          "/home/hadoop/yarnapplicationstatistics/script/interactive/join.sql").start();
+      new ProcessBuilder("/bin/bash", "/home/hadoop/" +
+          "yarnapplicationstatistics/script/interactive/interactive_test2.sh").start();
 
-      Thread.sleep(4000);
-
-      new ProcessBuilder("hive", " -i " +
-          "/home/hadoop/yarnapplicationstatistics/script/interactive/scan.sql").start();
+      new ProcessBuilder("/bin/bash", "/home/hadoop/" +
+          "yarnapplicationstatistics/script/interactive/interactive_test3.sh").start();
 
     } catch(Exception e) {
       e.printStackTrace();
