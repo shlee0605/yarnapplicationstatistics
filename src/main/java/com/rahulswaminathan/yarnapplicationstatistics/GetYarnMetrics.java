@@ -33,6 +33,7 @@ public class GetYarnMetrics {
     private Integer numIterations;
     private String sparkMaster;
     private String yarnWEBUI;
+    private String senario;
 
     public static void main(String[] args) throws Exception {
         GetYarnMetrics m = new GetYarnMetrics();
@@ -55,6 +56,8 @@ public class GetYarnMetrics {
         numIterations = Integer.parseInt(props.getProperty("numIterations"));
         sparkMaster = props.getProperty("sparkMaster");
         yarnWEBUI = props.getProperty("yarnWEBUI");
+        senario = props.getProperty("senario");
+
     }
 
     public String getYarnWEBUI() {
@@ -63,7 +66,7 @@ public class GetYarnMetrics {
 
     public void start() throws Exception{
 
-        Runnable run = new StatsThread(numIterations, dmem, emem, sparkMaster, queues);
+        Runnable run = new StatsThread(numIterations, dmem, emem, sparkMaster, senario, queues);
         new Thread(run).start();
 
         doStats(dmem, emem, queues);
@@ -209,8 +212,7 @@ public class GetYarnMetrics {
             makeNewLines(overallWriter, schedulerWriter, metricsWriter);
             String clusterMetricsResponse  = http.sendClusterMetricsGet();
             String clusterSchedulerResponse = http.sendClusterSchedulerGet();
-            System.out.println(clusterSchedulerResponse);
-
+            //System.out.println(clusterSchedulerResponse);
             Scheduler.queue[] schedulerQueues = readClusterSchedulerJsonResponse(clusterSchedulerResponse);
             long currentTimeElapsed = System.currentTimeMillis() - startTime;
             writeMessage("current time elapsed in ms=" + currentTimeElapsed, overallWriter, schedulerWriter, metricsWriter);
@@ -225,7 +227,7 @@ public class GetYarnMetrics {
             writeQueueInfoToFile(schedulerWriter, schedulerQueues);
             writeClusterMetrics(metricsWriter, clusterMetricsResponse);
             dbWriter.writeClusterMetrics(clusterMetricsResponse, currentTimeElapsed);
-            
+
             dbWriter.writeCapacitySchedulerMetrics(clusterSchedulerResponse, currentTimeElapsed);
 
             if (!hasStarted && numApps > 0)
@@ -391,13 +393,15 @@ class StatsThread implements Runnable {
     private String[] queues;
     private int numIterations;
     private String sparkMaster;
+    private String senario;
 
-    public StatsThread(int numIterations, String dmem, String emem, String sparkMaster, String... queues) {
+    public StatsThread(int numIterations, String dmem, String emem, String sparkMaster, String sen, String... queues) {
         this.numIterations = numIterations;
         this.dmem = dmem;
         this.emem = emem;
         this.queues = queues;
         this.sparkMaster = sparkMaster;
+        this.senario = sen;
     }
 
     public void run() {
@@ -405,7 +409,7 @@ class StatsThread implements Runnable {
             if (numIterations <= 0)
                 return;
 
-            launchSparkJob(dmem,emem,queues);
+            launchSparkJob(dmem,emem,senario,queues);
             numIterations--;
             Random r = new Random();
             while (numIterations > 0) {
@@ -414,7 +418,7 @@ class StatsThread implements Runnable {
                 long startTime = curTime + rand * 1000;
                 inner: while (true) {
                     if (System.currentTimeMillis() > startTime) {
-                        launchSparkJob(dmem, emem, queues);
+                        launchSparkJob(dmem, emem, senario, queues);
                         numIterations--;
                         break inner;
                     }
@@ -425,7 +429,7 @@ class StatsThread implements Runnable {
         }
     }
 
-    private void launchSparkJob(String dmem, String emem, String ... queues) throws Exception{
+    private void launchSparkJob(String dmem, String emem, String senario, String ... queues) throws Exception{
         // Create spark context, spark configuration, add listener, pass all parameters to third party program
         // (Ex. SparkPi)
       //  SparkConf conf = new SparkConf();
@@ -433,15 +437,18 @@ class StatsThread implements Runnable {
 
        // SparkContext sc = new SparkContext(conf);
 
-        for (String queue : queues) {
-            // new ProcessBuilder("/bin/bash", "/Users/shlee0605/" +
-            //         "bigdata/yarnapplicationstatistics/run_spark_pi.sh", dmem, emem, queue).start();
+        // for (String queue : queues) {
 
-            new ProcessBuilder("/bin/bash", "/Users/shlee0605/" +
-                    "bigdata/project1/script/interactive/interactive_test.sh", dmem, emem, queue).start();
-            new ProcessBuilder("/bin/bash", "/Users/shlee0605/" +
-                    "bigdata/project1/script/fb/run-job-test.sh", queue).start();
+        //     new ProcessBuilder("/bin/bash", "/Users/shlee0605/" +
+        //             "bigdata/project1/script/interactive/interactive_test.sh", dmem, emem, queue).start();
+        //     new ProcessBuilder("/bin/bash", "/Users/shlee0605/" +
+        //             "bigdata/project1/script/fb/run-job-test.sh", queue).start();
 
-        }
+        // }
+        System.out.println(senario);
+        Thread batch = new Thread(new BatchTenant(dmem, emem, "batch", senario));
+        Thread analytics = new Thread(new AnalyticsTenant(dmem, emem, "realtime", senario));
+        batch.start();
+        analytics.start();
     }
 }

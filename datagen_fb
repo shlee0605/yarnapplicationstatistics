@@ -1,0 +1,1 @@
+hadoop jar jar/WriteToHdfs.jar org.apache.hadoop.examples.WriteToHdfs -conf conf/randomwriter_conf.xsl workGenInput
