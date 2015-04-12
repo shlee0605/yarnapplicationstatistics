@@ -12,7 +12,7 @@ public class AnalyticsTenant implements Runnable {
   public AnalyticsTenant(String dmem, String emem, String queue, String sen) {
     this.queueName = queue;
     this.executorMem = emem;
-    this.driverMem = dmem;
+    this.driverMem  = dmem;
     this.senario = sen;
   }
 
@@ -32,12 +32,16 @@ public class AnalyticsTenant implements Runnable {
     System.out.println("Senario One is starting...");
     try {
       new ProcessBuilder("/bin/bash", "/home/hadoop/" +
-          "project1/script/interactive/interactive_test.sh", driverMem, executorMem, queueName).start();
+          "project1/script/interactive/interactive_test1.sh", driverMem, executorMem, queueName).start();
 
       Thread.sleep(4000);
 
       new ProcessBuilder("/bin/bash", "/home/hadoop/" +
-          "project1/script/interactive/interactive_test.sh", driverMem, executorMem, queueName).start();
+          "project1/script/interactive/interactive_test2.sh", driverMem, executorMem, queueName).start();
+
+      new ProcessBuilder("/bin/bash", "/home/hadoop/" +
+          "project1/script/interactive/interactive_test3  .sh", driverMem, executorMem, queueName).start();
+
     } catch(Exception e) {
       e.printStackTrace();
     }
