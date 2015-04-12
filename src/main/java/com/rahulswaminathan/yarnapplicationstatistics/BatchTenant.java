@@ -64,15 +64,20 @@ public class BatchTenant implements Runnable {
   public void senarioTwo() {
     System.out.println("Senario Two is starting...");
     try {
-      Thread.sleep(4000);
 
       new ProcessBuilder("/bin/bash", "/home/hadoop/" +
-          "yarnapplicationstatistics/script/fb/run-job-test.sh", queueName).start();
+          "yarnapplicationstatistics/script/fb/run-job-test1.sh", queueName).start();
 
-      Thread.sleep(4000);
+      Thread.sleep(24000);
 
       new ProcessBuilder("/bin/bash", "/home/hadoop/" +
-          "yarnapplicationstatistics/script/fb/run-job-test.sh", queueName).start();
+          "yarnapplicationstatistics/script/fb/run-job-test2.sh", queueName).start();
+
+      Thread.sleep(49000);
+
+      new ProcessBuilder("/bin/bash", "/home/hadoop/" +
+          "yarnapplicationstatistics/script/fb/run-job-test3.sh", queueName).start();
+
     } catch (Exception e) {
       e.printStackTrace();
     }
