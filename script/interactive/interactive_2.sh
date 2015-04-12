@@ -1,1 +1,1 @@
-hive -i /home/hadoop/yarnapplicationstatistics/script/join.sql
+hive -i /home/hadoop/yarnapplicationstatistics/script/interactive/join.sql

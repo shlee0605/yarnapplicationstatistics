@@ -1,1 +1,1 @@
-hive -i /home/hadoop/yarnapplicationstatistics/script/scan.sql
+hive -i /home/hadoop/yarnapplicationstatistics/script/interactive/scan.sql

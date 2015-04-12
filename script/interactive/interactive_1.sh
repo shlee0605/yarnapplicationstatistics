@@ -1,1 +1,1 @@
-hive -i /home/hadoop/yarnapplicationstatistics/script/aggregation.sql
+hive -i /home/hadoop/yarnapplicationstatistics/script/interactive/aggregation.sql
