@@ -34,10 +34,12 @@ public class AnalyticsTenant implements Runnable {
       new ProcessBuilder("/bin/bash", "/home/hadoop/" +
           "yarnapplicationstatistics/script/interactive/interactive_1.sh").start();
 
-      Thread.sleep(4000);
+      Thread.sleep(52000);
 
       new ProcessBuilder("/bin/bash", "/home/hadoop/" +
           "yarnapplicationstatistics/script/interactive/interactive_2.sh").start();
+
+      Thread.sleep(121000);
 
       new ProcessBuilder("/bin/bash", "/home/hadoop/" +
           "yarnapplicationstatistics/script/interactive/interactive_3.sh").start();
