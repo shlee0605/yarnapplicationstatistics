@@ -73,11 +73,6 @@ public class BatchTenant implements Runnable {
       new ProcessBuilder("/bin/bash", "/home/hadoop/" +
           "yarnapplicationstatistics/script/fb/run-job-test2.sh", queueName).start();
 
-      Thread.sleep(49000);
-
-      new ProcessBuilder("/bin/bash", "/home/hadoop/" +
-          "yarnapplicationstatistics/script/fb/run-job-test3.sh", queueName).start();
-
     } catch (Exception e) {
       e.printStackTrace();
     }
